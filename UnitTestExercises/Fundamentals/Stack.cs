@@ -2,7 +2,7 @@
 {
     public class Stack<T>
     {
-        private readonly List<T> _list = new List<T>();
+        private readonly List<T> _list = new();
 
         public int Count => _list.Count;
 
@@ -24,7 +24,6 @@
 
             return result;
         }
-
 
         public T Peek()
         {
