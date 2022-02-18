@@ -6,16 +6,20 @@ namespace UnitTestExercisesTests.Fundamentals
 {
     public class DemeritPointsCalculatorTests
     {
+        private readonly DemeritPointsCalculator _calculator;
+
+        public DemeritPointsCalculatorTests()
+        {
+            _calculator = new DemeritPointsCalculator();
+        }
+
         [Theory]
         [InlineData(301)]
         [InlineData(-1)]
         public void CalculateDemeritPoints_ThrowArgumentOutOfRangeException_WhenSpeedIsLowerThan0AndHigherThanMaxSpeed(int speed)
         {
-            //Arrange
-            var demeritPointsCalcular = new DemeritPointsCalculator();
-
             //Assert
-            Assert.Throws<ArgumentOutOfRangeException>(() => demeritPointsCalcular.CalculateDemeritPoints(speed));
+            Assert.Throws<ArgumentOutOfRangeException>(() => _calculator.CalculateDemeritPoints(speed));
         }
 
         [Theory]
@@ -26,15 +30,11 @@ namespace UnitTestExercisesTests.Fundamentals
         [InlineData(75, 2)]
         public void CalculateDemeritPoints_ReturnDemeritPoints_WhenSpeedIsValid(int speed, int expectedResult)
         {
-            //Arrange
-            var calculator = new DemeritPointsCalculator();
-
             //Act
-            var result = calculator.CalculateDemeritPoints(speed);
+            var result = _calculator.CalculateDemeritPoints(speed);
 
             //Assert
             Assert.Equal(expectedResult, result);
         }
-
     }
 }
