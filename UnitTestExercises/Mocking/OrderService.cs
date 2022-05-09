@@ -19,9 +19,7 @@
         }
     }
 
-    public class Order
-    {
-    }
+    public class Order { }
 
     public interface IStorage
     {

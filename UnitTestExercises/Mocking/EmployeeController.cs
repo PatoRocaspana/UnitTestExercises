@@ -1,21 +1,18 @@
-﻿using System.Data.Entity;
-
-namespace TestNinja.Mocking
+﻿namespace UnitTestExercises.Mocking
 {
     public class EmployeeController
     {
-        private EmployeeContext _db;
+        private readonly IEmployeeRepository _repository;
 
-        public EmployeeController()
+        public EmployeeController(IEmployeeRepository employeeRepository)
         {
-            _db = new EmployeeContext();
+            _repository = employeeRepository;
         }
 
         public ActionResult DeleteEmployee(int id)
         {
-            var employee = _db.Employees.Find(id);
-            _db.Employees.Remove(employee);
-            _db.SaveChanges();
+            _repository.DeleteEmployee(id);
+
             return RedirectToAction("Employees");
         }
 
@@ -28,17 +25,4 @@ namespace TestNinja.Mocking
     public class ActionResult { }
 
     public class RedirectResult : ActionResult { }
-
-    public class EmployeeContext
-    {
-        public DbSet<Employee> Employees { get; set; }
-
-        public void SaveChanges()
-        {
-        }
-    }
-
-    public class Employee
-    {
-    }
 }

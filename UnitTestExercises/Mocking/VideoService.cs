@@ -1,13 +1,23 @@
 ﻿using Newtonsoft.Json;
 using System.Data.Entity;
+using UnitTestExercises.Mocking;
 
 namespace TestNinja.Mocking
 {
     public class VideoService
     {
+        private readonly IFileReader _fileReader;
+        private readonly IVideoRepository _repository;
+
+        public VideoService(IFileReader fileReader, IVideoRepository repository)
+        {
+            _fileReader = fileReader;
+            _repository = repository;
+        }
+
         public string ReadVideoTitle()
         {
-            var str = File.ReadAllText("video.txt");
+            var str = _fileReader.Read("video.txt");
             var video = JsonConvert.DeserializeObject<Video>(str);
             if (video == null)
                 return "Error parsing the video.";
@@ -18,30 +28,24 @@ namespace TestNinja.Mocking
         {
             var videoIds = new List<int>();
 
-            using (var context = new VideoContext())
-            {
-                var videos =
-                    (from video in context.Videos
-                     where !video.IsProcessed
-                     select video).ToList();
+            var videos = _repository.GetUnprocessedVideos();
+            foreach (var v in videos)
+                videoIds.Add(v.Id);
 
-                foreach (var v in videos)
-                    videoIds.Add(v.Id);
-
-                return String.Join(",", videoIds);
-            }
+            var UnprocessedVideosAsCsv = string.Join(",", videoIds);
+            return UnprocessedVideosAsCsv;
         }
-    }
 
-    public class Video
-    {
-        public int Id { get; set; }
-        public string Title { get; set; }
-        public bool IsProcessed { get; set; }
-    }
+        public class Video
+        {
+            public int Id { get; set; }
+            public string Title { get; set; }
+            public bool IsProcessed { get; set; }
+        }
 
-    public class VideoContext : DbContext
-    {
-        public DbSet<Video> Videos { get; set; }
+        public class VideoContext : DbContext
+        {
+            public DbSet<Video> Videos { get; set; }
+        }
     }
 }
